@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
+COPY_BUFFER="/tmp/tmux_pane_path_copy_buffer.txt"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $CURRENT_DIR/helper.sh
+
 mesg() {
-        echo    "
-                Must have only one of the following flags:
-                create-window   : -w
-                copy-pane-path  : -c
-                paste-pane-path : -p
-                "
+    echo    "
+    Must have only one of the following flags:
+    create-window   : -w
+    copy-pane-path  : -c
+    paste-pane-path : -p
+    "
 }
 
 main() {
@@ -14,9 +18,6 @@ main() {
         mesg
         exit 1
     fi
-
-    COPY_BUFFER="/tmp/tmux_pane_path_copy_buffer.txt"
-    CURRENT_PATH=$(dirname $BASH_SOURCE)
 
     # If file doesn't exist:
     if [[ ! -e "$COPY_BUFFER" ]]; then
@@ -43,12 +44,10 @@ main() {
                 if [[ -s "$COPY_BUFFER" ]]; then
                     tmux new-window -c "$(cat $COPY_BUFFER)"
                     rm $COPY_BUFFER; touch $COPY_BUFFER
-                    tmux run-shell -b "$CURRENT_PATH/tmux_layout.sh"
                 else
                     tmux new-window -c "$HOME"
-                    tmux run-shell -b "$CURRENT_PATH/tmux_layout.sh"
                 fi
-
+                tmux run-shell -b $(user_option_or_default "@pathsync-new-window-layout-path" "$CURRENT_DIR/tmux_layout.sh")
                 ;;
             ?/)
                 mesg
