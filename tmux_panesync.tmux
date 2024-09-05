@@ -11,7 +11,7 @@ user_option_or_default() {
     echo "$option"
 }
 
-tmux bind-key $(user_option_or_default "@pathsync-kill-window" "P") run-shell -b "$CURRENT_DIR/scripts/tmux_cp_path.sh -p"
-tmux bind-key $(user_option_or_default "@pathsync-create-window" "BSpace") kill-window
+tmux bind-key $(user_option_or_default "@pathsync-kill-window" "BSpace") kill-window
+tmux bind-key $(user_option_or_default "@pathsync-create-window" "Enter") run-shell -b "$CURRENT_DIR/scripts/tmux_cp_path.sh -w"
 tmux bind-key $(user_option_or_default "@pathsync-copy-pane-path" "C") run-shell -b "$CURRENT_DIR/scripts/tmux_cp_path.sh -c"
-tmux bind-key $(user_option_or_default "@pathsync-paste-pane-path" "Enter") run-shell -b "$CURRENT_DIR/scripts/tmux_cp_path.sh -w"
+tmux bind-key $(user_option_or_default "@pathsync-paste-pane-path" "P") run-shell -b "$CURRENT_DIR/scripts/tmux_cp_path.sh -p"
