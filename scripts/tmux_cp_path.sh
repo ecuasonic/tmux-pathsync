@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
+mesg() {
+        echo    "
+                Must have only one of the following flags:
+                create-window   : -w
+                copy-pane-path  : -c
+                paste-pane-path : -p
+                "
+}
+
 main() {
-    if (( $# == 0 )); then
-        echo    "No Args:
-                -w "
+    if (( $# != 1 )); then
+        mesg
         exit 1
     fi
 
     COPY_BUFFER="/tmp/tmux_pane_path_copy_buffer.txt"
+    CURRENT_PATH=$(dirname $BASH_SOURCE)
 
     # If file doesn't exist:
     if [[ ! -e "$COPY_BUFFER" ]]; then
@@ -34,15 +43,15 @@ main() {
                 if [[ -s "$COPY_BUFFER" ]]; then
                     tmux new-window -c "$(cat $COPY_BUFFER)"
                     rm $COPY_BUFFER; touch $COPY_BUFFER
-                    tmux run-shell -b "./tmux_layout.sh"
+                    tmux run-shell -b "$CURRENT_PATH/tmux_layout.sh"
                 else
                     tmux new-window -c "$HOME"
-                    tmux run-shell -b "./tmux_layout.sh"
+                    tmux run-shell -b "$CURRENT_PATH/tmux_layout.sh"
                 fi
 
                 ;;
             ?/)
-                echo "Unknown Arg: You need to have either -w (window), -c (copy), or -p (paste) flags!"
+                mesg
                 exit 1
                 ;;
         esac
